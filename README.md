@@ -11,8 +11,16 @@ To run the Rust backend we need to install the Rust tool chain (version 1.76.0) 
 Cargo comes with Rust tool chain by default) 
 
 ```shell
-cde rust_backend/src
+cd rust_backend/src
 
 cargo build
 cargo run
+```
+
+To run the KT backend we need the Kotlin environment
+```shell
+cd kotlin_backend
+
+./gradlew clean build
+./gradlew bootRun
 ```
