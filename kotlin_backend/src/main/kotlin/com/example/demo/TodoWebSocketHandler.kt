@@ -18,21 +18,22 @@ class TodoWebSocketHandler(
 
         todoService.applyAction(receivedAction)
 
-        val response = mapper.writeValueAsString(
-            FullServerMessage(todoService.getFull())
-        )
-
-        println("Sending response message: $response \nto session[${session.id}")
-        session.sendMessage(TextMessage(response))
+//        val response = mapper.writeValueAsString(
+//            FullServerMessage(todoService.getFull())
+//        )
+//
+//        println("Sending response message: $response \nto session[${session.id}")
+//        session.sendMessage(TextMessage(response))
     }
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         println("Establish new websocket connection ${session.id}")
-        val response = mapper.writeValueAsString(
-            FullServerMessage(todoService.getFull())
-        )
-
-        println("Sending response message: $response \nto session[${session.id}]")
-        session.sendMessage(TextMessage(response))
+        todoService.addSession(session)
+//        val response = mapper.writeValueAsString(
+//            FullServerMessage(todoService.getFull())
+//        )
+//
+//        println("Sending response message: $response \nto session[${session.id}]")
+//        session.sendMessage(TextMessage(response))
     }
 }

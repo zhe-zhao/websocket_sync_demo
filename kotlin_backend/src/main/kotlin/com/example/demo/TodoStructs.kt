@@ -2,10 +2,9 @@ package com.example.demo
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import kotlinx.serialization.Serializable
+import com.fasterxml.jackson.databind.JsonNode
 
 
-@Serializable
 data class Todo(
     var name: String = "",
     val todos: MutableMap<Int, TodoRow> = mutableMapOf()
@@ -40,7 +39,6 @@ data class Todo(
     }
 }
 
-@Serializable
 data class TodoRow(
     val name: String,
     val completed: Boolean
@@ -111,5 +109,5 @@ data class FullServerMessage(
 ) : ServerMessage(type = Type.Full)
 
 data class PatchServerMessage(
-    val ops: List<String>
+    val ops: JsonNode
 ) : ServerMessage(type = Type.Patch)
