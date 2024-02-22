@@ -1,32 +1,32 @@
 import "./App.scss";
 
-import { Todo, TodoRow } from "./Todo";
+import { ContactBook, ContactRow } from "./Contact";
 import { sendAction, useWebsocket } from "./Websocket";
 
 function App() {
-  const todo = useWebsocket();
+  const contactBook = useWebsocket();
 
   return (
     <div className="container grid-lg">
       <div className="columns">
-        <div className="column col-lg-12 todo-title">
-          <h1>Todo App Example</h1>
+        <div className="column col-lg-12 contact-book-title">
+          <h1>Contact Book App Example</h1>
         </div>
       </div>
-      {todo === undefined && <div className="loading loading-lg"></div>}
-      {todo && <TodoComponent todo={todo} />}
+      {contactBook === undefined && <div className="loading loading-lg"></div>}
+      {contactBook && <ContactBookComponent contactBook={contactBook} />}
     </div>
   );
 }
 
-function TodoComponent({ todo }: { todo: Todo }) {
+function ContactBookComponent({ contactBook }: { contactBook: ContactBook }) {
   return (
     <>
       <div className="form-horizontal">
         <div className="form-group">
           <div className="col-2 col-lg-12">
             <label className="form-label" htmlFor="name">
-              <strong>Todo List Name</strong>
+              <strong>Contact Book Name</strong>
             </label>
           </div>
           <div className="col-10 col-lg-12">
@@ -34,8 +34,8 @@ function TodoComponent({ todo }: { todo: Todo }) {
               className="form-input"
               type="text"
               id="name"
-              placeholder="Shopping List"
-              value={todo.name}
+              placeholder="LP Contact Book"
+              value={contactBook.name}
               onChange={(ev) => {
                 sendAction({
                   type: "ChangeName",
@@ -46,13 +46,13 @@ function TodoComponent({ todo }: { todo: Todo }) {
           </div>
         </div>
       </div>
-      {Object.entries(todo.todos).map(([index, row]) => (
-        <TodoRowComponent key={index} row={row} index={+index} />
+      {Object.entries(contactBook.contacts).map(([index, row]) => (
+        <ContactRowComponent key={index} row={row} index={+index} />
       ))}
       <div className="columns">
-        <div className="column col-lg-12 todo-buttons">
+        <div className="column col-lg-12 contact-book-buttons">
           <div className="btn-group">
-            {Object.entries(todo.todos).some(([, val]) => val.completed) && (
+            {Object.entries(contactBook.contacts).some(([, val]) => val.nonEngage) && (
               <button
                 className="btn"
                 onClick={() => {
@@ -61,7 +61,7 @@ function TodoComponent({ todo }: { todo: Todo }) {
                   });
                 }}
               >
-                Remove Completed
+                Remove Non-engaged
               </button>
             )}
             <button
@@ -71,12 +71,12 @@ function TodoComponent({ todo }: { todo: Todo }) {
                   type: "Add",
                   row: {
                     name: "",
-                    completed: false,
+                    nonEngage: false,
                   },
                 });
               }}
             >
-              Add Todo
+              Add Contact
             </button>
           </div>
         </div>
@@ -85,21 +85,21 @@ function TodoComponent({ todo }: { todo: Todo }) {
   );
 }
 
-function TodoRowComponent({ row, index }: { row: TodoRow; index: number }) {
+function ContactRowComponent({ row, index }: { row: ContactRow; index: number }) {
   return (
     <div className="columns">
-      <div className="column col-lg-12 todo-row">
+      <div className="column col-lg-12 contact-book-row">
         <div className="input-group">
           <label className="form-checkbox">
             <input
               type="checkbox"
-              checked={row.completed}
+              checked={row.nonEngage}
               onChange={() =>
                 sendAction({
                   type: "Update",
                   row: {
                     ...row,
-                    completed: !row.completed,
+                    nonEngage: !row.nonEngage,
                   },
                   index,
                 })
@@ -108,10 +108,10 @@ function TodoRowComponent({ row, index }: { row: TodoRow; index: number }) {
             <i className="form-icon"></i>
           </label>
           <input
-            className={`form-input ${row.completed ? "completed" : ""}`}
+            className={`form-input ${row.nonEngage ? "non-engage" : ""}`}
             value={row.name}
             type="text"
-            placeholder="Add Todo Here!"
+            placeholder="Add Contact Here!"
             onChange={(ev) =>
               sendAction({
                 type: "Update",

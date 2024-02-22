@@ -14,19 +14,19 @@ import org.springframework.web.socket.WebSocketSession
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class TodoService {
+class ContactBookService {
     private val mapper = jacksonObjectMapper()
 
     private val mutex = Mutex()
 
-    private val todoInstance = Todo()
+    private val contactBookInstance = ContactBook()
     private val sessions = ConcurrentHashMap<String, WebSocketSession>()
 
     suspend fun addSession(session: WebSocketSession) {
         println("Establish new websocket connection ${session.id}")
         val fullResponse = TextMessage(
             mapper.writeValueAsString(
-                FullServerMessage(todoInstance)
+                FullServerMessage(contactBookInstance)
             )
         )
 
@@ -41,16 +41,21 @@ class TodoService {
         }
     }
 
+    fun removeSession(session: WebSocketSession) {
+        println("Removing session[${session.id}] from session list")
+        sessions.remove(session.id)
+    }
+
     suspend fun applyAction(action: Action) {
         // Grab a mutable reference
         // Serialize out the existing JSON for diffing later on
-        val existingState = mapper.valueToTree<JsonNode>(this.todoInstance)
+        val existingState = mapper.valueToTree<JsonNode>(this.contactBookInstance)
 
         // apply changes
-        todoInstance.apply(action)
+        contactBookInstance.apply(action)
 
         // Serialize out the new JSON for diffing
-        val newState = mapper.valueToTree<JsonNode>(this.todoInstance)
+        val newState = mapper.valueToTree<JsonNode>(this.contactBookInstance)
 
         // Get the changes using the `JsonDiff.asJson` method
         val patches = JsonDiff.asJson(existingState, newState)

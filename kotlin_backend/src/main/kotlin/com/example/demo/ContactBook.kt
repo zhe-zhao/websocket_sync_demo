@@ -5,23 +5,23 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.JsonNode
 
 
-data class Todo(
+data class ContactBook(
     var name: String = "",
-    val todos: MutableMap<Int, TodoRow> = mutableMapOf()
+    val contacts: MutableMap<Int, ContactRow> = mutableMapOf()
 ) {
     fun apply(action: Action) {
         when (action) {
             is AddAction -> {
-                val index = if (this.todos.isNotEmpty()) {
-                    this.todos.keys.max() + 1
+                val index = if (this.contacts.isNotEmpty()) {
+                    this.contacts.keys.max() + 1
                 } else {
                     0
                 }
-                this.todos[index] = action.row
+                this.contacts[index] = action.row
             }
 
             is UpdateAction -> {
-                this.todos[action.index] = action.row
+                this.contacts[action.index] = action.row
             }
 
             is ChangeNameAction -> {
@@ -29,19 +29,19 @@ data class Todo(
             }
 
             is RemoveAction -> {
-                this.todos.remove(action.index)
+                this.contacts.remove(action.index)
             }
 
             is RemoveCompletedAction -> {
-                this.todos.entries.filter { it.value.completed }.forEach { this.todos.remove(it.key) }
+                this.contacts.entries.filter { it.value.nonEngage }.forEach { this.contacts.remove(it.key) }
             }
         }
     }
 }
 
-data class TodoRow(
+data class ContactRow(
     val name: String,
-    val completed: Boolean
+    val nonEngage: Boolean
 )
 
 @JsonTypeInfo(
@@ -66,12 +66,12 @@ sealed class Action(
 }
 
 data class AddAction(
-    val row: TodoRow
+    val row: ContactRow
 ) : Action(type = Type.Add)
 
 data class UpdateAction(
     val index: Int,
-    val row: TodoRow
+    val row: ContactRow
 ) : Action(type = Type.Update)
 
 data class ChangeNameAction(
@@ -105,7 +105,7 @@ sealed class ServerMessage(
 }
 
 data class FullServerMessage(
-    val todo: Todo
+    val contactBook: ContactBook
 ) : ServerMessage(type = Type.Full)
 
 data class PatchServerMessage(

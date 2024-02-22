@@ -1,16 +1,16 @@
-export interface Todo {
+export interface ContactBook {
   name: string;
-  todos: { [index: number]: TodoRow };
+  contacts: { [index: number]: ContactRow };
 }
 
-export interface TodoRow {
+export interface ContactRow {
   name: string;
-  completed: boolean;
+  nonEngage: boolean;
 }
 
 export interface Add {
   type: "Add";
-  row: TodoRow;
+  row: ContactRow;
 }
 
 export interface ChangeName {
@@ -20,7 +20,7 @@ export interface ChangeName {
 
 export interface Update {
   type: "Update";
-  row: TodoRow;
+  row: ContactRow;
   index: number;
 }
 
@@ -33,4 +33,4 @@ export interface RemoveCompleted {
   type: "RemoveCompleted";
 }
 
-export type TodoAction = Add | ChangeName | Update | Remove | RemoveCompleted;
+export type ContactAction = Add | ChangeName | Update | Remove | RemoveCompleted;

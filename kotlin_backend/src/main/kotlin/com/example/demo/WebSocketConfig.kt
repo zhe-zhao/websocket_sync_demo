@@ -8,10 +8,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket
 class WebSocketConfig(
-    private val todoWebSocketHandler: TodoWebSocketHandler
+    private val contactBookWebSocketHandler: ContactBookWebSocketHandler
 ) : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(todoWebSocketHandler, "/ws")
+        registry.addHandler(contactBookWebSocketHandler, "/contact-book")
             .setAllowedOrigins("*")
     }
 }

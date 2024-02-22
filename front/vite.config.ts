@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/ws": {
+      "/contact-book": {
         // proxy to rust backend
         // target: "http://127.0.0.1:3333",
         // proxy to kotlin backend

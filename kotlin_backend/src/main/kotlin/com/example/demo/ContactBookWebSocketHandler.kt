@@ -4,13 +4,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.stereotype.Component
+import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Component
-class TodoWebSocketHandler(
-    val todoService: TodoService
+class ContactBookWebSocketHandler(
+    val contactBookService: ContactBookService
 ) : TextWebSocketHandler() {
     private val mapper = jacksonObjectMapper()
 
@@ -20,13 +21,19 @@ class TodoWebSocketHandler(
 
 
         GlobalScope.launch {
-            todoService.applyAction(receivedAction)
+            contactBookService.applyAction(receivedAction)
         }
     }
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         GlobalScope.launch {
-            todoService.addSession(session)
+            contactBookService.addSession(session)
+        }
+    }
+
+    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+        GlobalScope.launch {
+            contactBookService.removeSession(session)
         }
     }
 }

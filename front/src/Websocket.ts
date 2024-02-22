@@ -1,6 +1,6 @@
 import { applyPatch, Operation } from "fast-json-patch";
 import { useEffect, useState } from "react";
-import { Todo, TodoAction } from "./Todo";
+import { ContactBook, ContactAction } from "./Contact";
 
 interface Patch {
   type: "Patch";
@@ -9,17 +9,17 @@ interface Patch {
 
 interface Full {
   type: "Full";
-  todo: Todo;
+  contactBook: ContactBook;
 }
 
 type ServerMessage = Patch | Full;
 
 let websocket: WebSocket | undefined;
-let todo: Todo | undefined;
+let contactBook: ContactBook | undefined;
 
-const setupWebsocket = (onTodoUpdate: (todo: Todo) => void) => {
+const setupWebsocket = (onContactBookUpdate: (contactBook: ContactBook) => void) => {
   const loc = window.location;
-  const uri = `${loc.protocol === "https:" ? "wss:" : "ws:"}//${loc.host}/ws`;
+  const uri = `${loc.protocol === "https:" ? "wss:" : "ws:"}//${loc.host}/contact-book`;
   console.log(`Connecting websocket: ${uri}`);
 
   const connection = new WebSocket(uri);
@@ -38,7 +38,7 @@ const setupWebsocket = (onTodoUpdate: (todo: Todo) => void) => {
       console.error("Websocket connection closed", reason);
 
       setTimeout(() => {
-        setupWebsocket(onTodoUpdate);
+        setupWebsocket(onContactBookUpdate);
       }, 500);
     }
   };
@@ -53,22 +53,22 @@ const setupWebsocket = (onTodoUpdate: (todo: Todo) => void) => {
 
     switch (msg.type) {
       case "Patch": {
-        if (todo !== undefined) {
-          let { newDocument: newTodo } = applyPatch(
-            todo,
+        if (contactBook !== undefined) {
+          let { newDocument: newContactBook } = applyPatch(
+            contactBook,
             msg.ops,
             false,
             false
           );
 
-          onTodoUpdate(newTodo);
-          todo = newTodo;
+          onContactBookUpdate(newContactBook);
+          contactBook = newContactBook;
         }
         break;
       }
       case "Full": {
-        onTodoUpdate(msg.todo);
-        todo = msg.todo;
+        onContactBookUpdate(msg.contactBook);
+        contactBook = msg.contactBook;
         break;
       }
     }
@@ -76,13 +76,12 @@ const setupWebsocket = (onTodoUpdate: (todo: Todo) => void) => {
 };
 
 export const useWebsocket = () => {
-  // Keep our local state of the todo app to trigger a render on change
-  let [todo, updateTodo] = useState<Todo>();
+  let [contactBook, updateContactBook] = useState<ContactBook>();
 
   useEffect(() => {
     // Update our app state when changes are received
     setupWebsocket((msg) => {
-      updateTodo(msg);
+      updateContactBook(msg);
     });
     // If the destructor runs, clean up the websocket
     return () => {
@@ -93,10 +92,10 @@ export const useWebsocket = () => {
     // The empty `[]` dependency list makes this `useEffect` callback execute only once on construction
   }, []);
 
-  return todo;
+  return contactBook;
 };
 
-export const sendAction = (action: TodoAction): void => {
+export const sendAction = (action: ContactAction): void => {
   if (websocket) {
     websocket.send(JSON.stringify(action));
   }
