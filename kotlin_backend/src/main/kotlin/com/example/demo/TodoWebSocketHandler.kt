@@ -1,6 +1,8 @@
 package com.example.demo
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -16,24 +18,15 @@ class TodoWebSocketHandler(
         println("Received action: ${message.payload}")
         val receivedAction = mapper.readValue(message.payload, Action::class.java)
 
-        todoService.applyAction(receivedAction)
 
-//        val response = mapper.writeValueAsString(
-//            FullServerMessage(todoService.getFull())
-//        )
-//
-//        println("Sending response message: $response \nto session[${session.id}")
-//        session.sendMessage(TextMessage(response))
+        GlobalScope.launch {
+            todoService.applyAction(receivedAction)
+        }
     }
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        println("Establish new websocket connection ${session.id}")
-        todoService.addSession(session)
-//        val response = mapper.writeValueAsString(
-//            FullServerMessage(todoService.getFull())
-//        )
-//
-//        println("Sending response message: $response \nto session[${session.id}]")
-//        session.sendMessage(TextMessage(response))
+        GlobalScope.launch {
+            todoService.addSession(session)
+        }
     }
 }
