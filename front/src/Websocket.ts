@@ -17,9 +17,9 @@ type ServerMessage = Patch | Full;
 let websocket: WebSocket | undefined;
 let contactBook: ContactBook | undefined;
 
-const setupWebsocket = (onContactBookUpdate: (contactBook: ContactBook) => void) => {
+const setupWebsocket = (userId: String, onContactBookUpdate: (contactBook: ContactBook) => void) => {
   const loc = window.location;
-  const uri = `${loc.protocol === "https:" ? "wss:" : "ws:"}//${loc.host}/contact-book`;
+  const uri = `${loc.protocol === "https:" ? "wss:" : "ws:"}//${loc.host}/contact-book?userId=${userId}`;
   console.log(`Connecting websocket: ${uri}`);
 
   const connection = new WebSocket(uri);
@@ -38,7 +38,7 @@ const setupWebsocket = (onContactBookUpdate: (contactBook: ContactBook) => void)
       console.error("Websocket connection closed", reason);
 
       setTimeout(() => {
-        setupWebsocket(onContactBookUpdate);
+        setupWebsocket(userId, onContactBookUpdate);
       }, 500);
     }
   };
@@ -75,12 +75,12 @@ const setupWebsocket = (onContactBookUpdate: (contactBook: ContactBook) => void)
   };
 };
 
-export const useWebsocket = () => {
+export const useWebsocket = (userId: String) => {
   let [contactBook, updateContactBook] = useState<ContactBook>();
 
   useEffect(() => {
     // Update our app state when changes are received
-    setupWebsocket((msg) => {
+    setupWebsocket(userId, (msg) => {
       updateContactBook(msg);
     });
     // If the destructor runs, clean up the websocket

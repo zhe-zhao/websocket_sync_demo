@@ -1,1 +1,6 @@
-
+spring:
+  data:
+    mongodb:
+      uri: mongodb://sync_demo_user:sync_demo_pwd@localhost:27017/sync_demo
+      ssl:
+        enabled: false

@@ -21,6 +21,8 @@ To run the KT backend we need the Kotlin environment
 ```shell
 cd kotlin_backend
 
+docker-compose -f docker-compose.yml up
+
 ./gradlew clean build
 ./gradlew bootRun
 ```
