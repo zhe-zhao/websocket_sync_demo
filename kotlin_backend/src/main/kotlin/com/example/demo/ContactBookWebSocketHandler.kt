@@ -20,13 +20,13 @@ class ContactBookWebSocketHandler(
         val receivedAction = mapper.readValue(message.payload, Action::class.java)
 
         GlobalScope.launch {
-            contactBookService.applyAction(receivedAction, session.getUserId())
+            contactBookService.applyAction(receivedAction, session)
         }
     }
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         GlobalScope.launch {
-            contactBookService.addSession(session)
+            contactBookService.registerSession(session)
         }
     }
 
@@ -43,8 +43,8 @@ fun WebSocketSession.getUserId(): String {
 
     for (pair in pairs) {
         val index = pair.indexOf("=")
-        if (pair.substring(0, index) == "userId"){
-            return pair.substring(index+1)
+        if (pair.substring(0, index) == "userId") {
+            return pair.substring(index + 1)
         }
     }
     throw RuntimeException("user not found")

@@ -11,15 +11,18 @@ function App() {
     return (
         <Fragment>
             {userId === "" &&
-                <select id="users"
-                        name="users"
-                        defaultValue={""}
-                        onChange={ev => setId(ev.currentTarget.value)}
-                >
-                    <option value="---">---</option>
-                    <option value="dummy_user_id_1">Dummy User 1</option>
-                    <option value="dummy_user_id_2">Dummy User 2</option>
-                </select>
+                <Fragment>
+                    <strong>Select a user: </strong>
+                    <select id="users"
+                            name="users"
+                            defaultValue={""}
+                            onChange={ev => setId(ev.currentTarget.value)}
+                    >
+                        <option value="---">---</option>
+                        <option value="dummy_user_id_1">Dummy User 1</option>
+                        <option value="dummy_user_id_2">Dummy User 2</option>
+                    </select>
+                </Fragment>
             }
 
             {userId != "" && <MainPage userId={userId}/>}
