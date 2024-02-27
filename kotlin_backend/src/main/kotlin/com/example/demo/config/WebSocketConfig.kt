@@ -1,5 +1,6 @@
-package com.example.demo
+package com.example.demo.config
 
+import com.example.demo.ContactBookWebSocketHandler
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
