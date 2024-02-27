@@ -1,3 +1,8 @@
+The work inspired by: 
+[https://cetra3.github.io/blog/synchronising-with-websocket/](https://cetra3.github.io/blog/synchronising-with-websocket/)  
+and the origin repo:
+[https://github.com/cetra3/websocket_jsonpatch](https://github.com/cetra3/websocket_jsonpatch)
+
 To run the frontend app we need to install yarn package manager globally. And
 
 ```shell
